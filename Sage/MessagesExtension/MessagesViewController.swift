@@ -54,8 +54,25 @@ class MessagesViewController: MSMessagesAppViewController {
         
         let message = MSMessage()
         let layout = MSMessageTemplateLayout()
-        layout.caption = text  // The AI response - non-editable
-        layout.subcaption = "via Sage ✨"  // Attribution
+        
+        // Split response to use more space: first ~100 chars in caption, rest in subcaption
+        if text.count > 100 {
+            // Find a good break point (end of sentence or word)
+            let breakIndex = text.index(text.startIndex, offsetBy: min(100, text.count))
+            if let sentenceEnd = text[..<breakIndex].lastIndex(of: ".") {
+                let firstPart = String(text[...sentenceEnd])
+                let secondPart = String(text[text.index(after: sentenceEnd)...]).trimmingCharacters(in: .whitespaces)
+                layout.caption = firstPart
+                layout.subcaption = secondPart.isEmpty ? "via Sage ✨" : secondPart + " (Sage ✨)"
+            } else {
+                layout.caption = text
+                layout.subcaption = "via Sage ✨"
+            }
+        } else {
+            layout.caption = text
+            layout.subcaption = "via Sage ✨"
+        }
+        
         message.layout = layout
         
         // Insert directly into thread (bypasses compose bar - tamper-proof)
