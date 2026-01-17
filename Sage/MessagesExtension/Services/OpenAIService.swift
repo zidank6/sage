@@ -5,11 +5,14 @@ actor OpenAIService {
     private let baseURL = "https://api.openai.com/v1/chat/completions"
     private let config = ConfigService.shared
     
-    /// System prompt - front-loads key info for iMessage bubbles
+    /// System prompt - strict character limit for iMessage bubbles
     private let systemPrompt = """
-    You are Sage in iMessage. IMPORTANT: Put the key answer in your FIRST sentence. \
-    Lead with the most important fact or insight. Keep total response under 200 characters. \
-    Be direct and memorable. Cite sources briefly if factual.
+    You are Sage in iMessage. STRICT RULES:
+    1. Maximum 150 characters total - this is CRITICAL
+    2. Give ONE complete thought/answer
+    3. Numbers and facts first, context after
+    4. No filler words. No "approximately" use "~"
+    5. End with a period, never mid-sentence
     """
     
     // MARK: - Non-Streaming Request
