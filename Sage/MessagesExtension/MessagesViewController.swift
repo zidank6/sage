@@ -2,19 +2,11 @@ import UIKit
 import Messages
 import SwiftUI
 
-/// Main view controller for the Sage iMessage extension.
-/// Bridges MSMessagesAppViewController to SwiftUI - compact mode only.
+/// Main view controller for Sage iMessage extension.
 class MessagesViewController: MSMessagesAppViewController {
     
-    // MARK: - Properties
-    
-    /// The SwiftUI hosting controller
     private var hostingController: UIHostingController<AnyView>?
-    
-    /// Shared state for the chat interface
     private let chatState = ChatState()
-    
-    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,20 +14,16 @@ class MessagesViewController: MSMessagesAppViewController {
         setupUI()
     }
     
-    // MARK: - UI Setup
-    
     private func setupUI() {
         let contentView = CompactView(
             chatState: chatState,
             onSendToChat: { [weak self] message in
-                self?.insertMessage(message)
+                self?.insertRichMessage(message)
             }
         )
         
         let hostingController = UIHostingController(rootView: AnyView(contentView))
         self.hostingController = hostingController
-        
-        // Ensure visible background
         hostingController.view.backgroundColor = .systemBackground
         
         addChild(hostingController)
@@ -52,29 +40,29 @@ class MessagesViewController: MSMessagesAppViewController {
         hostingController.didMove(toParent: self)
     }
     
-    // MARK: - Presentation Style
-    
     override func willBecomeActive(with conversation: MSConversation) {
         super.willBecomeActive(with: conversation)
-        
-        // Extract selected message text if available
         if let selectedMessage = conversation.selectedMessage,
            let layout = selectedMessage.layout as? MSMessageTemplateLayout {
             chatState.selectedContext = layout.caption ?? layout.subcaption
         }
     }
     
-    /// Inserts a plain text message into the conversation
-    private func insertMessage(_ text: String) {
+    /// Inserts a rich, non-editable message using MSMessageTemplateLayout
+    private func insertRichMessage(_ text: String) {
         guard let conversation = activeConversation else { return }
         
-        // Insert as plain text
-        conversation.insertText(text) { [weak self] error in
+        let message = MSMessage()
+        let layout = MSMessageTemplateLayout()
+        layout.caption = text  // The AI response - non-editable
+        layout.subcaption = "via Sage ✨"  // Attribution
+        message.layout = layout
+        
+        // Insert directly into thread (bypasses compose bar - tamper-proof)
+        conversation.insert(message) { [weak self] error in
             if let error = error {
-                self?.chatState.errorMessage = "Failed to send: \(error.localizedDescription)"
+                self?.chatState.errorMessage = "Failed: \(error.localizedDescription)"
             } else {
-                self?.chatState.lastSentMessage = text
-                // Clear the chat state after sending
                 self?.chatState.messages.removeAll()
             }
         }

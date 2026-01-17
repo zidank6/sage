@@ -1,7 +1,6 @@
 import SwiftUI
 
-/// Compact mode view: Full interaction in the bottom drawer
-/// Shows input, response, and send-to-chat all in compact space
+/// Compact mode view: Minimal input pinned to bottom
 struct CompactView: View {
     @Bindable var chatState: ChatState
     let onSendToChat: (String) -> Void
@@ -9,33 +8,30 @@ struct CompactView: View {
     private let openAI = OpenAIService()
     
     var body: some View {
-        VStack(spacing: 8) {
-            // Response area (only shows when there's a response or loading)
+        VStack(spacing: 0) {
+            // Push content to bottom
+            Spacer(minLength: 0)
+            
+            // Response area (only when there's content)
             if chatState.isLoading || !currentResponse.isEmpty {
                 responseArea
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 8)
             }
             
-            // Input bar - always visible
+            // Input bar - always at bottom
             inputBar
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .frame(maxWidth: .infinity)
         .background(Color(.systemBackground))
     }
     
     // MARK: - Subviews
     
     private var responseArea: some View {
-        HStack(alignment: .top, spacing: 10) {
-            // Sage icon
-            Image(systemName: "sparkles")
-                .font(.caption)
-                .foregroundStyle(.blue)
-                .padding(.top, 2)
-            
+        HStack(alignment: .top, spacing: 8) {
             VStack(alignment: .leading, spacing: 6) {
-                // Response text or loading
                 if chatState.isLoading && currentResponse.isEmpty {
                     HStack(spacing: 6) {
                         ProgressView()
@@ -47,35 +43,34 @@ struct CompactView: View {
                 } else {
                     Text(currentResponse)
                         .font(.subheadline)
-                        .lineLimit(4)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(3)
                 }
                 
-                // Send to chat button
+                // Action buttons
                 if !currentResponse.isEmpty && !chatState.isLoading {
-                    Button {
-                        onSendToChat("Sage: \(currentResponse)")
-                        clearResponse()
-                    } label: {
-                        Label("Send", systemImage: "arrow.up.circle.fill")
-                            .font(.caption.bold())
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.small)
-                }
-            }
-            
-            Spacer()
-            
-            // Dismiss response button
-            if !currentResponse.isEmpty && !chatState.isLoading {
-                Button {
-                    clearResponse()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
+                    HStack(spacing: 8) {
+                        Button {
+                            onSendToChat(currentResponse)
+                            clearResponse()
+                        } label: {
+                            Text("Send")
+                                .font(.caption.bold())
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                        
+                        Button {
+                            clearResponse()
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.caption)
+                        }
                         .foregroundStyle(.secondary)
+                    }
                 }
             }
+            
+            Spacer(minLength: 0)
         }
         .padding(10)
         .background(Color(.secondarySystemBackground))
@@ -83,33 +78,22 @@ struct CompactView: View {
     }
     
     private var inputBar: some View {
-        HStack(spacing: 10) {
-            // Sage icon
-            Image(systemName: "sparkles")
-                .font(.title3)
-                .foregroundStyle(.blue)
-            
-            // Input field
-            TextField("Ask Sage...", text: $chatState.inputText)
+        HStack(spacing: 8) {
+            TextField("Ask anything...", text: $chatState.inputText)
                 .textFieldStyle(.plain)
                 .font(.body)
-                .onSubmit {
-                    sendMessage()
-                }
+                .onSubmit { sendMessage() }
             
-            // Send button
-            Button {
-                sendMessage()
-            } label: {
+            Button { sendMessage() } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.title2)
-                    .foregroundStyle(canSend ? .blue : .gray)
+                    .foregroundStyle(canSend ? .blue : .gray.opacity(0.5))
             }
             .disabled(!canSend)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Color(.secondarySystemBackground))
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(Color(.tertiarySystemBackground))
         .clipShape(Capsule())
     }
     
@@ -131,57 +115,31 @@ struct CompactView: View {
         let text = chatState.inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !chatState.isLoading else { return }
         
-        // Clear previous response
         chatState.messages.removeAll()
-        
-        // Add user message
-        let userMessage = ChatMessage(role: .user, content: text)
-        chatState.messages.append(userMessage)
+        chatState.messages.append(ChatMessage(role: .user, content: text))
         chatState.inputText = ""
         chatState.isLoading = true
-        chatState.errorMessage = nil
         
         Task {
             do {
-                // Create placeholder for streaming response
                 let responseMessage = ChatMessage(role: .assistant, content: "")
-                await MainActor.run {
-                    chatState.messages.append(responseMessage)
-                }
+                await MainActor.run { chatState.messages.append(responseMessage) }
                 let responseIndex = await MainActor.run { chatState.messages.count - 1 }
                 
-                // Stream response from OpenAI
                 let stream = await openAI.streamMessage(text, context: nil, history: [])
                 for try await chunk in stream {
-                    await MainActor.run {
-                        chatState.messages[responseIndex].content += chunk
-                    }
+                    await MainActor.run { chatState.messages[responseIndex].content += chunk }
                 }
                 
-                await MainActor.run {
-                    chatState.isLoading = false
-                }
+                await MainActor.run { chatState.isLoading = false }
             } catch {
                 await MainActor.run {
                     chatState.isLoading = false
-                    chatState.errorMessage = error.localizedDescription
-                    
-                    // Show error inline
                     if chatState.messages.count > 1 {
                         chatState.messages[chatState.messages.count - 1].content = "Error: \(error.localizedDescription)"
                     }
                 }
             }
         }
-    }
-}
-
-#Preview {
-    VStack {
-        Spacer()
-        CompactView(
-            chatState: ChatState(),
-            onSendToChat: { _ in }
-        )
     }
 }
