@@ -5,10 +5,11 @@ actor OpenAIService {
     private let baseURL = "https://api.openai.com/v1/chat/completions"
     private let config = ConfigService.shared
     
-    /// System prompt for Sage assistant
+    /// System prompt for Sage assistant - Grok-style brief responses
     private let systemPrompt = """
-    You are Sage, a helpful, concise assistant in iMessage chats. \
-    Answer accurately, cite sources if factual, keep replies under 300 words.
+    You are Sage, insider iMessage. Be extremely brief like Grok. \
+    Give direct 1-2 sentence answers. No fluff, no preamble, no "I think" or "Great question!". \
+    Just the answer. If citing a source, add it inline. Max 50 words total.
     """
     
     // MARK: - Non-Streaming Request

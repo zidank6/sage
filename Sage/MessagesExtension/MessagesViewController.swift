@@ -3,7 +3,7 @@ import Messages
 import SwiftUI
 
 /// Main view controller for the Sage iMessage extension.
-/// Bridges MSMessagesAppViewController to SwiftUI and handles presentation style changes.
+/// Bridges MSMessagesAppViewController to SwiftUI - compact mode only.
 class MessagesViewController: MSMessagesAppViewController {
     
     // MARK: - Properties
@@ -18,18 +18,15 @@ class MessagesViewController: MSMessagesAppViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         setupUI()
     }
     
     // MARK: - UI Setup
     
     private func setupUI() {
-        let contentView = ContentView(
+        let contentView = CompactView(
             chatState: chatState,
-            presentationStyle: presentationStyle,
-            onRequestExpand: { [weak self] in
-                self?.requestPresentationStyle(.expanded)
-            },
             onSendToChat: { [weak self] message in
                 self?.insertMessage(message)
             }
@@ -37,6 +34,9 @@ class MessagesViewController: MSMessagesAppViewController {
         
         let hostingController = UIHostingController(rootView: AnyView(contentView))
         self.hostingController = hostingController
+        
+        // Ensure visible background
+        hostingController.view.backgroundColor = .systemBackground
         
         addChild(hostingController)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -64,45 +64,18 @@ class MessagesViewController: MSMessagesAppViewController {
         }
     }
     
-    override func willTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        super.willTransition(to: presentationStyle)
-        updateUI(for: presentationStyle)
-    }
-    
-    override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        super.didTransition(to: presentationStyle)
-    }
-    
-    // MARK: - Private Methods
-    
-    private func updateUI(for presentationStyle: MSMessagesAppPresentationStyle) {
-        let contentView = ContentView(
-            chatState: chatState,
-            presentationStyle: presentationStyle,
-            onRequestExpand: { [weak self] in
-                self?.requestPresentationStyle(.expanded)
-            },
-            onSendToChat: { [weak self] message in
-                self?.insertMessage(message)
-            }
-        )
-        hostingController?.rootView = AnyView(contentView)
-    }
-    
-    /// Inserts a message into the conversation
+    /// Inserts a plain text message into the conversation
     private func insertMessage(_ text: String) {
         guard let conversation = activeConversation else { return }
         
-        let message = MSMessage()
-        let layout = MSMessageTemplateLayout()
-        layout.caption = text
-        message.layout = layout
-        
-        conversation.insert(message) { [weak self] error in
+        // Insert as plain text
+        conversation.insertText(text) { [weak self] error in
             if let error = error {
                 self?.chatState.errorMessage = "Failed to send: \(error.localizedDescription)"
             } else {
                 self?.chatState.lastSentMessage = text
+                // Clear the chat state after sending
+                self?.chatState.messages.removeAll()
             }
         }
     }
