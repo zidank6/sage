@@ -164,27 +164,37 @@ struct ExpandedView: View {
         
         // Build history for context (exclude current message)
         let history = Array(chatState.messages.dropLast())
+        let context = chatState.selectedContext
         
-        Task { @MainActor in
+        Task {
             do {
                 // Create placeholder for streaming response
-                var responseMessage = ChatMessage(role: .assistant, content: "")
-                chatState.messages.append(responseMessage)
-                let responseIndex = chatState.messages.count - 1
+                let responseMessage = ChatMessage(role: .assistant, content: "")
+                await MainActor.run {
+                    chatState.messages.append(responseMessage)
+                }
+                let responseIndex = await MainActor.run { chatState.messages.count - 1 }
                 
                 // Stream response from OpenAI
-                for try await chunk in openAI.streamMessage(text, context: chatState.selectedContext, history: history) {
-                    chatState.messages[responseIndex].content += chunk
+                let stream = await openAI.streamMessage(text, context: context, history: history)
+                for try await chunk in stream {
+                    await MainActor.run {
+                        chatState.messages[responseIndex].content += chunk
+                    }
                 }
                 
-                chatState.isLoading = false
+                await MainActor.run {
+                    chatState.isLoading = false
+                }
             } catch {
-                chatState.isLoading = false
-                chatState.errorMessage = error.localizedDescription
-                
-                // Remove empty assistant message on error
-                if let last = chatState.messages.last, last.role == .assistant && last.content.isEmpty {
-                    chatState.messages.removeLast()
+                await MainActor.run {
+                    chatState.isLoading = false
+                    chatState.errorMessage = error.localizedDescription
+                    
+                    // Remove empty assistant message on error
+                    if let last = chatState.messages.last, last.role == .assistant && last.content.isEmpty {
+                        chatState.messages.removeLast()
+                    }
                 }
             }
         }
