@@ -73,6 +73,9 @@ class MessagesViewController: MSMessagesAppViewController {
             layout.subcaption = "via Sage ✨"
         }
         
+        // Add Sage logo to the bubble
+        layout.image = UIImage(named: "SageLogo")
+        
         message.layout = layout
         
         // Insert directly into thread (bypasses compose bar - tamper-proof)

@@ -5,11 +5,11 @@ actor OpenAIService {
     private let baseURL = "https://api.openai.com/v1/chat/completions"
     private let config = ConfigService.shared
     
-    /// System prompt - balanced for iMessage (informative but concise)
+    /// System prompt - front-loads key info for iMessage bubbles
     private let systemPrompt = """
-    You are Sage in iMessage. Give helpful 2-3 sentence answers. \
-    Be informative but concise. Include key facts. \
-    Cite sources in parentheses when factual. No filler phrases.
+    You are Sage in iMessage. IMPORTANT: Put the key answer in your FIRST sentence. \
+    Lead with the most important fact or insight. Keep total response under 200 characters. \
+    Be direct and memorable. Cite sources briefly if factual.
     """
     
     // MARK: - Non-Streaming Request

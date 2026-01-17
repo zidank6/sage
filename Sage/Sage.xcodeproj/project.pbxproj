@@ -22,6 +22,7 @@
 		AAA00002017 /* ChatModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002018; };
 		AAA00002019 /* ConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002020; };
 		AAA00002021 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002022; };
+		AAA00002023 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002024; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		AAA00002018 /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
 		AAA00002020 /* ConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigService.swift; sourceTree = "<group>"; };
 		AAA00002022 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		AAA00002024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				AAA00002014 /* Config.plist */,
+				AAA00002024 /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAA00002013 /* Config.plist in Resources */,
+				AAA00002023 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
