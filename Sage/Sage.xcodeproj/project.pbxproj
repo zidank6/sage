@@ -7,22 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		/* Container App */
-		AAA00001001 /* SageApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00001002; };
-		
-		/* Messages Extension */
-		AAA00002001 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002002; };
-		AAA00002003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002004; };
-		AAA00002005 /* CompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002006; };
-		AAA00002007 /* ExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002008; };
-		AAA00002009 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002010; };
-		AAA00002011 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002012; };
-		AAA00002013 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002014; };
-		AAA00002015 /* MessagesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AAA00003001; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		AAA00002017 /* ChatModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002018; };
-		AAA00002019 /* ConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002020; };
-		AAA00002021 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002022; };
-		AAA00002023 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002024; };
+		AAA00001001 /* SageApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00001002 /* SageApp.swift */; };
+		AAA00002001 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002002 /* MessagesViewController.swift */; };
+		AAA00002003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002004 /* ContentView.swift */; };
+		AAA00002005 /* CompactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002006 /* CompactView.swift */; };
+		AAA00002007 /* ExpandedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002008 /* ExpandedView.swift */; };
+		AAA00002009 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002010 /* ChatBubbleView.swift */; };
+		AAA00002011 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002012 /* Message.swift */; };
+		AAA00002013 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002014 /* Config.plist */; };
+		AAA00002015 /* MessagesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AAA00003001 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AAA00002017 /* ChatModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002018 /* ChatModels.swift */; };
+		AAA00002019 /* ConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002020 /* ConfigService.swift */; };
+		AAA00002021 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002022 /* OpenAIService.swift */; };
+		AAA00002023 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002024 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,12 +47,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		/* Container App */
 		AAA00001002 /* SageApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SageApp.swift; sourceTree = "<group>"; };
 		AAA00001003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AAA00007001 /* Sage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sage.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		
-		/* Messages Extension */
 		AAA00002002 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		AAA00002004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AAA00002006 /* CompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactView.swift; sourceTree = "<group>"; };
@@ -64,11 +57,12 @@
 		AAA00002012 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		AAA00002014 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		AAA00002016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AAA00003001 /* MessagesExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MessagesExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAA00002018 /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
 		AAA00002020 /* ConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigService.swift; sourceTree = "<group>"; };
 		AAA00002022 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		AAA00002024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AAA00003001 /* MessagesExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MessagesExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAA00007001 /* Sage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +164,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AAA00003002 /* MessagesExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAA00011002 /* Build configuration list for PBXNativeTarget "MessagesExtension" */;
+			buildPhases = (
+				AAA00012002 /* Sources */,
+				AAA00008002 /* Frameworks */,
+				AAA00013002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MessagesExtension;
+			productName = MessagesExtension;
+			productReference = AAA00003001 /* MessagesExtension.appex */;
+			productType = "com.apple.product-type.app-extension.messages";
+		};
 		AAA00010001 /* Sage */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AAA00011001 /* Build configuration list for PBXNativeTarget "Sage" */;
@@ -189,23 +200,6 @@
 			productReference = AAA00007001 /* Sage.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AAA00003002 /* MessagesExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AAA00011002 /* Build configuration list for PBXNativeTarget "MessagesExtension" */;
-			buildPhases = (
-				AAA00012002 /* Sources */,
-				AAA00008002 /* Frameworks */,
-				AAA00013002 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = MessagesExtension;
-			productName = MessagesExtension;
-			productReference = AAA00003001 /* MessagesExtension.appex */;
-			productType = "com.apple.product-type.app-extension.messages";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -214,12 +208,12 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
-					AAA00010001 = {
+					AAA00003002 = {
 						CreatedOnToolsVersion = 15.0;
 					};
-					AAA00003002 = {
+					AAA00010001 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -356,6 +350,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -412,6 +407,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -441,7 +437,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 			};
 			name = Debug;
 		};
@@ -469,13 +464,13 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 			};
 			name = Release;
 		};
 		AAA00018001 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -494,13 +489,13 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 			};
 			name = Debug;
 		};
 		AAA00018002 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -519,22 +514,12 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AAA00015001 /* Build configuration list for PBXProject "Sage" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AAA00016001 /* Debug */,
-				AAA00016002 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		AAA00011001 /* Build configuration list for PBXNativeTarget "Sage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -549,6 +534,15 @@
 			buildConfigurations = (
 				AAA00018001 /* Debug */,
 				AAA00018002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAA00015001 /* Build configuration list for PBXProject "Sage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAA00016001 /* Debug */,
+				AAA00016002 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

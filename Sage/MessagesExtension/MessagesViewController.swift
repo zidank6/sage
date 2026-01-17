@@ -73,8 +73,8 @@ class MessagesViewController: MSMessagesAppViewController {
             layout.subcaption = "via Sage ✨"
         }
         
-        // Add Sage logo to the bubble
-        layout.image = UIImage(named: "SageLogo")
+        // Note: Removed layout.image to keep bubbles compact
+        // The app icon still shows in the drawer
         
         message.layout = layout
         
