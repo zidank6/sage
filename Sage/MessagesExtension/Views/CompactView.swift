@@ -6,13 +6,27 @@ struct CompactView: View {
     let onSendToChat: (String) -> Void
     
     private let openAI = OpenAIService()
+    @State private var usageService = UsageService.shared
+    @State private var subService = SubscriptionService.shared
+    @State private var showUpgrade = false
     
     var body: some View {
         VStack(spacing: 8) {
             // Input bar - at top
             inputBar
             
-            // Response area (only when there's content)
+            // Usage Counter / Limit Warning
+            if !subService.isPremium {
+                if usageService.isLimitReached {
+                    limitReachedView
+                } else if !chatState.isLoading && currentResponse.isEmpty {
+                    Text("\(usageService.remaining) messages left today")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            
+            // Response area
             if chatState.isLoading || !currentResponse.isEmpty {
                 responseArea
             }
@@ -21,9 +35,32 @@ struct CompactView: View {
         .padding(.top, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color(.systemBackground))
+        .sheet(isPresented: $showUpgrade) {
+            UpgradeView()
+        }
     }
     
     // MARK: - Subviews
+    
+    private var limitReachedView: some View {
+        HStack {
+            Image(systemName: "lock.fill")
+                .foregroundStyle(.orange)
+            Text("Daily limit reached")
+                .font(.caption.bold())
+            Spacer()
+            Button("Unlock Unlimited") {
+                showUpgrade = true
+            }
+            .font(.caption.bold())
+            .buttonStyle(.bordered)
+            .tint(.blue)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 4)
+        .background(Color.orange.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
     
     private var responseArea: some View {
         HStack(alignment: .top, spacing: 8) {
@@ -76,13 +113,22 @@ struct CompactView: View {
                 .textFieldStyle(.plain)
                 .font(.body)
                 .onSubmit { sendMessage() }
+                .disabled(usageService.isLimitReached && !subService.isPremium)
             
-            Button { sendMessage() } label: {
-                Image(systemName: "arrow.up.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(canSend ? .blue : .gray.opacity(0.5))
+            if !subService.isPremium && usageService.isLimitReached {
+                Button { showUpgrade = true } label: {
+                    Image(systemName: "lock.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.orange)
+                }
+            } else {
+                Button { sendMessage() } label: {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(canSend ? .blue : .gray.opacity(0.5))
+                }
+                .disabled(!canSend)
             }
-            .disabled(!canSend)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
@@ -108,6 +154,12 @@ struct CompactView: View {
         let text = chatState.inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !chatState.isLoading else { return }
         
+        // Use a credit
+        guard usageService.increment() else {
+            showUpgrade = true
+            return
+        }
+        
         chatState.messages.removeAll()
         chatState.messages.append(ChatMessage(role: .user, content: text))
         chatState.inputText = ""
@@ -119,7 +171,7 @@ struct CompactView: View {
                 await MainActor.run { chatState.messages.append(responseMessage) }
                 let responseIndex = await MainActor.run { chatState.messages.count - 1 }
                 
-                let stream = await openAI.streamMessage(text, context: nil, history: [])
+                let stream = await openAI.streamMessage(text, context: nil, history: [], isPremium: subService.isPremium)
                 for try await chunk in stream {
                     await MainActor.run { chatState.messages[responseIndex].content += chunk }
                 }

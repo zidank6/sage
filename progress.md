@@ -10,19 +10,21 @@
 - [x] Added app icon (blue sparkle logo)
 - [x] Optimized prompt for 150-char limit to prevent cutoff
 - [x] Tested on real iPhone via Xcode
+- [x] **Implemented Freemium Model**
+    - [x] Created `Sage.storekit` for local testing ($1.99/mo, $19.99/yr)
+    - [x] Built `SubscriptionService` (StoreKit 2)
+    - [x] Built `UsageService` (Daily limit: 30)
+    - [x] Added Paywall (`UpgradeView`)
+    - [x] Updated Logic: Free (150 chars, gpt-3.5) vs Premium (300 chars, gpt-4o)
 
 ### Key Files
-- `CompactView.swift` — Bottom drawer UI with input + response
-- `OpenAIService.swift` — Streaming API client (actor)
-- `MessagesViewController.swift` — MSMessage insertion
-- `Config.plist` — API key + settings (80 max tokens)
+- `SubscriptionService.swift` — Handles IAP
+- `UsageService.swift` — Handles daily counts
+- `UpgradeView.swift` — Premium paywall
+- `Sage.storekit` — Test configuration
 
-### Design Decisions
-- **Rich bubbles** over plain text (tamper-proof, non-editable)
-- **150 char limit** to fit in MSMessageTemplateLayout
-- **No large logo** in bubbles (removed to keep compact)
-- **Caption + subcaption** split for longer responses
-
-### Bundle Identifiers
-- Container: `com.zidankazi.sage`
-- Extension: `com.zidankazi.sage.MessagesExtension`
+### Testing Notes (Freemium)
+To test in Simulator:
+1. Go to **Product > Scheme > Edit Scheme**
+2. Select **Run** > **Options**
+3. Set **StoreKit Configuration** to `Sage.storekit`

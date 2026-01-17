@@ -5,43 +5,30 @@ actor OpenAIService {
     private let baseURL = "https://api.openai.com/v1/chat/completions"
     private let config = ConfigService.shared
     
-    /// System prompt - strict character limit for iMessage bubbles
-    private let systemPrompt = """
-    You are Sage in iMessage. STRICT RULES:
-    1. Maximum 150 characters total - this is CRITICAL
-    2. Give ONE complete thought/answer
-    3. Numbers and facts first, context after
-    4. No filler words. No "approximately" use "~"
-    5. End with a period, never mid-sentence
+    /// System prompt - strict limit for Free users
+    private let systemPromptFree = """
+    You are Sage. STRICT RULES:
+    1. Max 150 chars total
+    2. ONE complete thought
+    3. Numbers first
+    4. No filler
+    5. End with period
     """
     
-    // MARK: - Non-Streaming Request
+    /// System prompt - relaxed for Premium users
+    private let systemPromptPremium = """
+    You are Sage. Provide helpful, detailed answers.
+    1. Max 300 characters.
+    2. Be concise but informative.
+    3. Include context and nuance.
+    """
     
-    /// Send a chat completion request (non-streaming)
-    func sendMessage(_ text: String, context: String? = nil, history: [ChatMessage] = []) async throws -> String {
-        guard config.isConfigured else {
-            throw OpenAIError.notConfigured
-        }
-        
-        let request = try buildRequest(text: text, context: context, history: history, stream: false)
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        try validateResponse(response, data: data)
-        
-        let chatResponse = try JSONDecoder().decode(ChatCompletionResponse.self, from: data)
-        
-        guard let content = chatResponse.choices.first?.message.content else {
-            throw OpenAIError.invalidResponse
-        }
-        
-        return content
-    }
+    // MARK: - Legacy Methods Removed
+    // sendMessage, buildRequest, and validateResponse were removed as we now use streamMessage directly
     
     // MARK: - Streaming Request
     
-    /// Send a streaming chat completion request
-    func streamMessage(_ text: String, context: String? = nil, history: [ChatMessage] = []) -> AsyncThrowingStream<String, Error> {
+    func streamMessage(_ content: String, context: String?, history: [ChatMessage], isPremium: Bool = false) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 do {
@@ -49,52 +36,69 @@ actor OpenAIService {
                         throw OpenAIError.notConfigured
                     }
                     
-                    let request = try buildRequest(text: text, context: context, history: history, stream: true)
+                    // Build messages array
+                    var messages: [APIMessage] = []
                     
-                    let (bytes, response) = try await URLSession.shared.bytes(for: request)
+                    // 1. System Prompt (Dynamic based on premium)
+                    let prompt = isPremium ? systemPromptPremium : systemPromptFree
+                    messages.append(APIMessage(role: "system", content: prompt))
+                    
+                    // 2. Context (if any)
+                    if let context = context, !context.isEmpty {
+                        messages.append(APIMessage(role: "user", content: "Context: \(context)"))
+                    }
+                    
+                    // 3. User Message
+                    messages.append(APIMessage(role: "user", content: content))
+                    
+                    // Configuration
+                    let maxTokens = isPremium ? 300 : (config.maxTokens ?? 80)
+                    let model = isPremium ? "gpt-4o" : (config.model)
+                    
+                    let requestBody = ChatCompletionRequest(
+                        model: model,
+                        messages: messages,
+                        temperature: config.temperature ?? 0.7,
+                        maxTokens: maxTokens,
+                        stream: true
+                    )
+                    
+                    // Create URL Request for Streaming
+                    guard let url = URL(string: baseURL) else {
+                        throw OpenAIError.invalidURL
+                    }
+                    var urlRequest = URLRequest(url: url)
+                    urlRequest.httpMethod = "POST"
+                    urlRequest.addValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
+                    urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                    urlRequest.httpBody = try JSONEncoder().encode(requestBody)
+                    
+                    let (stream, response) = try await URLSession.shared.bytes(for: urlRequest)
                     
                     guard let httpResponse = response as? HTTPURLResponse else {
                         throw OpenAIError.invalidResponse
                     }
                     
-                    if httpResponse.statusCode != 200 {
-                        // Collect error response
-                        var errorData = Data()
-                        for try await byte in bytes {
-                            errorData.append(byte)
+                    guard httpResponse.statusCode == 200 else {
+                        // Attempt to read error details
+                        var errorText = ""
+                        for try await byte in stream {
+                            if let char = String(bytes: [byte], encoding: .utf8) {
+                                errorText += char
+                            }
                         }
-                        try validateResponse(response, data: errorData)
+                        throw OpenAIError.httpError(statusCode: httpResponse.statusCode, message: errorText)
                     }
                     
-                    // Parse SSE stream
-                    for try await line in bytes.lines {
-                        // SSE format: each line starts with "data: "
-                        guard line.hasPrefix("data: ") else { continue }
-                        
-                        let jsonString = String(line.dropFirst(6))
-                        
-                        // Check for [DONE] marker
-                        if jsonString == "[DONE]" {
-                            break
-                        }
-                        
-                        // Parse JSON chunk
-                        guard let jsonData = jsonString.data(using: .utf8) else { continue }
-                        
-                        do {
-                            let chunk = try JSONDecoder().decode(ChatCompletionChunk.self, from: jsonData)
-                            
-                            if let content = chunk.choices.first?.delta.content {
+                    // Parse SSE Stream
+                    for try await line in stream.lines {
+                        if line.hasPrefix("data: "), line != "data: [DONE]" {
+                            let json = line.dropFirst(6)
+                            if let data = json.data(using: .utf8),
+                               let chunk = try? JSONDecoder().decode(ChatCompletionChunk.self, from: data),
+                               let content = chunk.choices.first?.delta.content {
                                 continuation.yield(content)
                             }
-                            
-                            // Check for finish_reason
-                            if chunk.choices.first?.finishReason != nil {
-                                break
-                            }
-                        } catch {
-                            // Skip malformed chunks but log
-                            print("⚠️ Failed to parse chunk: \(jsonString)")
                         }
                     }
                     
@@ -106,65 +110,6 @@ actor OpenAIService {
         }
     }
     
-    // MARK: - Private Helpers
-    
-    private func buildRequest(text: String, context: String?, history: [ChatMessage], stream: Bool) throws -> URLRequest {
-        guard let url = URL(string: baseURL) else {
-            throw OpenAIError.invalidURL
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
-        
-        // Build messages array
-        var messages: [APIMessage] = [
-            APIMessage(role: "system", content: systemPrompt)
-        ]
-        
-        // Add conversation history
-        for msg in history {
-            messages.append(APIMessage(role: msg.role.rawValue, content: msg.content))
-        }
-        
-        // Build user message with optional context
-        var userContent = text
-        if let context = context, !context.isEmpty {
-            userContent = "Context from conversation: \"\(context)\"\n\nQuestion: \(text)"
-        }
-        messages.append(APIMessage(role: "user", content: userContent))
-        
-        let body = ChatCompletionRequest(
-            model: config.model,
-            messages: messages,
-            temperature: config.temperature,
-            maxTokens: config.maxTokens,
-            stream: stream
-        )
-        
-        request.httpBody = try JSONEncoder().encode(body)
-        
-        return request
-    }
-    
-    private func validateResponse(_ response: URLResponse, data: Data) throws {
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw OpenAIError.invalidResponse
-        }
-        
-        guard httpResponse.statusCode == 200 else {
-            // Try to parse error response
-            if let apiError = try? JSONDecoder().decode(APIError.self, from: data) {
-                throw OpenAIError.httpError(
-                    statusCode: httpResponse.statusCode,
-                    message: apiError.error.message
-                )
-            }
-            throw OpenAIError.httpError(
-                statusCode: httpResponse.statusCode,
-                message: "Unknown error"
-            )
-        }
-    }
+    // MARK: - Legacy Methods Removed
+    // buildRequest and validateResponse were removed as we now use streamMessage directly
 }
