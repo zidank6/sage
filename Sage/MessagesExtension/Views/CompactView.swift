@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Compact mode view: Minimal input pinned to bottom
+/// Compact mode view: Minimal input at top of drawer
 struct CompactView: View {
     @Bindable var chatState: ChatState
     let onSendToChat: (String) -> Void
@@ -8,22 +8,18 @@ struct CompactView: View {
     private let openAI = OpenAIService()
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Push content to bottom
-            Spacer(minLength: 0)
+        VStack(spacing: 8) {
+            // Input bar - at top
+            inputBar
             
             // Response area (only when there's content)
             if chatState.isLoading || !currentResponse.isEmpty {
                 responseArea
-                    .padding(.horizontal, 12)
-                    .padding(.bottom, 8)
             }
-            
-            // Input bar - always at bottom
-            inputBar
-                .padding(.horizontal, 12)
-                .padding(.bottom, 8)
         }
+        .padding(.horizontal, 12)
+        .padding(.top, 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color(.systemBackground))
     }
     
@@ -43,7 +39,7 @@ struct CompactView: View {
                 } else {
                     Text(currentResponse)
                         .font(.subheadline)
-                        .lineLimit(3)
+                        .lineLimit(4)
                 }
                 
                 // Action buttons
@@ -59,9 +55,7 @@ struct CompactView: View {
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
                         
-                        Button {
-                            clearResponse()
-                        } label: {
+                        Button { clearResponse() } label: {
                             Image(systemName: "xmark")
                                 .font(.caption)
                         }
@@ -69,7 +63,6 @@ struct CompactView: View {
                     }
                 }
             }
-            
             Spacer(minLength: 0)
         }
         .padding(10)
