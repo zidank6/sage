@@ -24,6 +24,10 @@
 		AAA00002028 /* UsageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002027 /* UsageService.swift */; };
 		AAA00002030 /* Sage.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002029 /* Sage.storekit */; };
 		AAA00002032 /* UpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002031 /* UpgradeView.swift */; };
+		AAA00002034 /* ChatHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002033 /* ChatHistoryItem.swift */; };
+		AAA00002035 /* ChatHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002033 /* ChatHistoryItem.swift */; };
+		AAA00002037 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002036 /* DataController.swift */; };
+		AAA00002038 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002036 /* DataController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +72,8 @@
 		AAA00002027 /* UsageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageService.swift; sourceTree = "<group>"; };
 		AAA00002029 /* Sage.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sage.storekit; sourceTree = "<group>"; };
 		AAA00002031 /* UpgradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeView.swift; sourceTree = "<group>"; };
+		AAA00002033 /* ChatHistoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatHistoryItem.swift; sourceTree = "<group>"; };
+		AAA00002036 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		AAA00002024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AAA00003001 /* MessagesExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MessagesExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAA00007001 /* Sage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sage.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				AAA00002012 /* Message.swift */,
+				AAA00002033 /* ChatHistoryItem.swift */,
 				AAA00002018 /* ChatModels.swift */,
 			);
 			path = Models;
@@ -158,6 +165,7 @@
 				AAA00002020 /* ConfigService.swift */,
 				AAA00002022 /* OpenAIService.swift */,
 				AAA00002025 /* SubscriptionService.swift */,
+				AAA00002036 /* DataController.swift */,
 				AAA00002027 /* UsageService.swift */,
 			);
 			path = Services;
@@ -275,6 +283,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAA00001001 /* SageApp.swift in Sources */,
+				AAA00002034 /* ChatHistoryItem.swift in Sources */,
+				AAA00002037 /* DataController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +304,8 @@
 				AAA00002026 /* SubscriptionService.swift in Sources */,
 				AAA00002028 /* UsageService.swift in Sources */,
 				AAA00002032 /* UpgradeView.swift in Sources */,
+				AAA00002035 /* ChatHistoryItem.swift in Sources */,
+				AAA00002038 /* DataController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

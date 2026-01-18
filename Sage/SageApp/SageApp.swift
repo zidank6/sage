@@ -1,10 +1,12 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct SageApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modelContainer(DataController.shared.container)
         }
     }
 }

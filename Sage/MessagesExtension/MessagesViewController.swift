@@ -1,6 +1,7 @@
 import UIKit
 import Messages
 import SwiftUI
+import SwiftData
 
 /// Main view controller for Sage iMessage extension.
 class MessagesViewController: MSMessagesAppViewController {
@@ -21,6 +22,7 @@ class MessagesViewController: MSMessagesAppViewController {
                 self?.insertRichMessage(message)
             }
         )
+        .modelContainer(DataController.shared.container)
         
         let hostingController = UIHostingController(rootView: AnyView(contentView))
         self.hostingController = hostingController
