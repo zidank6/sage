@@ -1,4 +1,4 @@
-# 🔮 Sage — AI in iMessage
+# 🔮 Sage — @grok but for iMessage
 
 An iMessage extension that brings AI-powered answers to your texts. Ask questions, get instant responses, and share them as tamper-proof bubbles.
 
