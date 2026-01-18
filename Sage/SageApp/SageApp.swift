@@ -84,6 +84,17 @@ struct HomeView: View {
                 Spacer()
                 
                 // Action
+                // Debug Info
+                let dbPath = DataController.shared.container.configurations.first?.url.path ?? "Unknown"
+                Text(dbPath)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .onTapGesture {
+                        print("DB Path: \(dbPath)")
+                    }
+                
                 Link(destination: URL(string: "sms:")!) {
                     HStack {
                         Image(systemName: "message.fill")
