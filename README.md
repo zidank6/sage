@@ -1,68 +1,77 @@
-# 🔮 Sage — @grok but for iMessage
+# Sage
 
-An iMessage extension that brings AI-powered answers to your texts. Ask questions, get instant responses, and share them as tamper-proof bubbles.
+![Swift](https://img.shields.io/badge/Swift-5.9-orange)
+![iOS](https://img.shields.io/badge/iOS-17+-blue)
+![xAI](https://img.shields.io/badge/xAI-Grok--3-black)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-### Key Features
-*   **Context-Aware Chat**: Reads recent messages to provide relevant responses.
-*   **Privacy-Friendly**: Your API key is stored securely in Keychain; conversations stay on-device.
-*   **Custom Persona**: Adjusts tone based on premium status (Witty/Dry vs. Smart/Detailed).
-*   **History & Sync**: Standalone iOS App with synced history and bookmarking.
-*   **Copy & Share**: Easily copy responses or share conversations from the History details.
+iMessage extension for AI chat. Uses xAI's Grok with live search.
 
-## 🚀 Setup
+## Requirements
 
-### Prerequisites
 - Xcode 15+
 - iOS 17+ device
-- xAI API key
+- xAI API key ([console.x.ai](https://console.x.ai))
 
-### Install
+## Setup
 
-1. Clone and open:
-   ```bash
-   git clone https://github.com/yourusername/sage.git
-   open sage/Sage/Sage.xcodeproj
-   ```
+```bash
+git clone https://github.com/zidank6/sage.git
+cd sage/Sage
+open Sage.xcodeproj
+```
 
-2. Add your API key in `MessagesExtension/Resources/Config.plist`:
-   ```xml
-   <key>xAIAPIKey</key>
-   <string>sk-your-key-here</string>
-   ```
+Add your API key to `MessagesExtension/Resources/Config.plist`:
 
-3. Update bundle identifiers:
-   - Sage target: `com.yourname.sage`
-   - MessagesExtension: `com.yourname.sage.MessagesExtension`
+```xml
+<key>xAIAPIKey</key>
+<string>your-key-here</string>
+```
 
-4. Run on your iPhone (select device, ⌘R)
+Update bundle identifiers to match your provisioning profile, then build to device.
 
-5. Open Messages → Tap + → Find **Sage**
+## Usage
 
-## 📁 Structure
+1. Open Messages
+2. Tap the Apps button (+)
+3. Select Sage
+4. Type a question
+
+Responses stream in real-time. Tap to send as a message bubble.
+
+## Project Structure
 
 ```
 MessagesExtension/
-├── Views/
-│   └── CompactView.swift      # Bottom drawer UI
 ├── Services/
-│   ├── xAIService.swift    # Streaming API client
-│   └── ConfigService.swift    # API key loader
+│   ├── xAIService.swift      # API client, streaming
+│   └── ConfigService.swift   # Config loader
+├── Views/
+│   ├── CompactView.swift     # Main UI
+│   └── ExpandedView.swift    # Full conversation
 ├── Models/
-│   ├── Message.swift          # Chat state
-│   └── ChatModels.swift       # xAI types
+│   ├── ChatModels.swift      # Request/response types
+│   └── Message.swift         # Chat state
 └── Resources/
-    ├── Config.plist           # API settings
-    └── Assets.xcassets        # App icon
+    └── Config.plist          # API key, model config
 ```
 
-## ⚙️ Configuration
+## Configuration
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `DefaultModel` | grok-3 | xAI model |
-| `MaxTokens` | 80 | Response length limit |
-| `Temperature` | 0.7 | Creativity (0-1) |
+| Key | Default | Notes |
+|-----|---------|-------|
+| `xAIAPIKey` | — | Required |
+| `DefaultModel` | `grok-3-mini` | `grok-3` for premium |
+| `MaxTokens` | `300` | Response length |
+| `Temperature` | `0.7` | 0-1 |
 
-## 📝 License
+## Limitations
+
+- Requires xAI API access (not free)
+- Live search is billed separately ($0.025/source)
+- iMessage extensions have limited background execution
+- No on-device inference; all requests go to xAI servers
+
+## License
 
 MIT
