@@ -149,7 +149,7 @@ struct ExpandedView: View {
     
     // MARK: - Actions
     
-    private let openAI = OpenAIService()
+    private let xAI = xAIService()
     
     private func sendMessage() {
         let text = chatState.inputText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -175,8 +175,8 @@ struct ExpandedView: View {
                 }
                 let responseIndex = await MainActor.run { chatState.messages.count - 1 }
                 
-                // Stream response from OpenAI
-                let stream = await openAI.streamMessage(text, context: context, history: history)
+                // Stream response from xAI
+                let stream = await xAI.streamMessage(text, context: context, history: history)
                 for try await chunk in stream {
                     await MainActor.run {
                         chatState.messages[responseIndex].content += chunk

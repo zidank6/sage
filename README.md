@@ -14,7 +14,7 @@ An iMessage extension that brings AI-powered answers to your texts. Ask question
 ### Prerequisites
 - Xcode 15+
 - iOS 17+ device
-- OpenAI API key
+- xAI API key
 
 ### Install
 
@@ -26,7 +26,7 @@ An iMessage extension that brings AI-powered answers to your texts. Ask question
 
 2. Add your API key in `MessagesExtension/Resources/Config.plist`:
    ```xml
-   <key>OpenAIAPIKey</key>
+   <key>xAIAPIKey</key>
    <string>sk-your-key-here</string>
    ```
 
@@ -45,11 +45,11 @@ MessagesExtension/
 ├── Views/
 │   └── CompactView.swift      # Bottom drawer UI
 ├── Services/
-│   ├── OpenAIService.swift    # Streaming API client
+│   ├── xAIService.swift    # Streaming API client
 │   └── ConfigService.swift    # API key loader
 ├── Models/
 │   ├── Message.swift          # Chat state
-│   └── ChatModels.swift       # OpenAI types
+│   └── ChatModels.swift       # xAI types
 └── Resources/
     ├── Config.plist           # API settings
     └── Assets.xcassets        # App icon
@@ -59,7 +59,7 @@ MessagesExtension/
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `DefaultModel` | gpt-4o | OpenAI model |
+| `DefaultModel` | grok-3 | xAI model |
 | `MaxTokens` | 80 | Response length limit |
 | `Temperature` | 0.7 | Creativity (0-1) |
 

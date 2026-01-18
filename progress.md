@@ -5,7 +5,7 @@
 ### Completed
 - [x] Created Xcode project with container app + Messages extension
 - [x] Built SwiftUI UI (CompactView for bottom drawer)
-- [x] Integrated OpenAI API with streaming (SSE)
+- [x] Integrated xAI API with streaming (SSE)
 - [x] Added MSMessageTemplateLayout for tamper-proof bubbles
 - [x] Added app icon (blue sparkle logo)
 - [x] Optimized prompt for 150-char limit to prevent cutoff
@@ -15,7 +15,7 @@
     - [x] Built `SubscriptionService` (StoreKit 2)
     - [x] Built `UsageService` (Daily limit: 30)
     - [x] Added Paywall (`UpgradeView`)
-    - [x] Updated Logic: Free (150 chars, gpt-3.5) vs Premium (300 chars, gpt-4o)
+    - [x] Updated Logic: Free (150 chars, grok-3-mini) vs Premium (300 chars, grok-3)
 - [x] **UI Overhaul (CompactView)**
     - [x] Implemented Glassmorphic backgrounds (Material)
     - [x] Added `TypingIndicator` with bounce animation

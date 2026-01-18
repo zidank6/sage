@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - Request Models
 
-/// OpenAI Chat Completions API request
+/// xAI Chat Completions API request
 struct ChatCompletionRequest: Encodable {
     let model: String
     let messages: [APIMessage]
@@ -16,7 +16,7 @@ struct ChatCompletionRequest: Encodable {
     }
 }
 
-/// Message format for OpenAI API
+/// Message format for xAI API
 struct APIMessage: Codable {
     let role: String
     let content: String
@@ -24,7 +24,7 @@ struct APIMessage: Codable {
 
 // MARK: - Response Models (Non-Streaming)
 
-/// OpenAI Chat Completions API response
+/// xAI Chat Completions API response
 struct ChatCompletionResponse: Decodable {
     let id: String
     let choices: [Choice]
@@ -56,7 +56,7 @@ struct ChatCompletionResponse: Decodable {
 
 // MARK: - Streaming Response Models
 
-/// Streaming chunk from OpenAI API (SSE format)
+/// Streaming chunk from xAI API (SSE format)
 struct ChatCompletionChunk: Decodable {
     let id: String
     let choices: [StreamChoice]
@@ -80,7 +80,7 @@ struct ChatCompletionChunk: Decodable {
 
 // MARK: - Error Models
 
-/// OpenAI API error response
+/// xAI API error response
 struct APIError: Decodable, Error {
     let error: ErrorDetail
     
@@ -95,8 +95,8 @@ struct APIError: Decodable, Error {
     }
 }
 
-/// Custom errors for OpenAI service
-enum OpenAIError: LocalizedError {
+/// Custom errors for xAI service
+enum xAIError: LocalizedError {
     case notConfigured
     case invalidURL
     case invalidResponse

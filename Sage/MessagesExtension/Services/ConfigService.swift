@@ -7,7 +7,7 @@ struct ConfigService {
     static let appGroupId = "group.com.zidankazi.sage"
     
     // Keys
-    private let apiKeyKey = "OPENAI_API_KEY"
+    private let apiKeyKey = "XAI_API_KEY"
     
     var apiKey: String {
         // 1. Try App Group (Shared)
@@ -17,11 +17,11 @@ struct ConfigService {
         }
         
         // 2. Fallback to bundled Config.plist
-        return getBundledConfigValue(forKey: "OpenAIAPIKey") ?? ""
+        return getBundledConfigValue(forKey: "xAIAPIKey") ?? ""
     }
     
     var model: String {
-        getBundledConfigValue(forKey: "DefaultModel") ?? "gpt-3.5-turbo"
+        getBundledConfigValue(forKey: "DefaultModel") ?? "grok-3-mini"
     }
     
     var maxTokens: Int? {
@@ -51,7 +51,7 @@ struct ConfigService {
         guard let sharedDefaults = UserDefaults(suiteName: Self.appGroupId) else { return }
         
         // Read from local bundle
-        if let localKey = getBundledConfigValue(forKey: "OpenAIAPIKey"), !localKey.isEmpty {
+        if let localKey = getBundledConfigValue(forKey: "xAIAPIKey"), !localKey.isEmpty {
             sharedDefaults.set(localKey, forKey: apiKeyKey)
             print("ConfigService: Synced API Key to App Group")
         }

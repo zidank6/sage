@@ -18,7 +18,7 @@
 		AAA00002015 /* MessagesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AAA00003001 /* MessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AAA00002017 /* ChatModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002018 /* ChatModels.swift */; };
 		AAA00002019 /* ConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002020 /* ConfigService.swift */; };
-		AAA00002021 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002022 /* OpenAIService.swift */; };
+		AAA00002021 /* xAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002022 /* xAIService.swift */; };
 		AAA00002023 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002024 /* Assets.xcassets */; };
 		AAA00002026 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002025 /* SubscriptionService.swift */; };
 		AAA00002028 /* UsageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002027 /* UsageService.swift */; };
@@ -75,7 +75,7 @@
 		AAA00002016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AAA00002018 /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
 		AAA00002020 /* ConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigService.swift; sourceTree = "<group>"; };
-		AAA00002022 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		AAA00002022 /* xAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xAIService.swift; sourceTree = "<group>"; };
 		AAA00002025 /* SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
 		AAA00002027 /* UsageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageService.swift; sourceTree = "<group>"; };
 		AAA00002029 /* Sage.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sage.storekit; sourceTree = "<group>"; };
@@ -173,7 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				AAA00002020 /* ConfigService.swift */,
-				AAA00002022 /* OpenAIService.swift */,
+				AAA00002022 /* xAIService.swift */,
 				AAA00002025 /* SubscriptionService.swift */,
 				AAA00002036 /* DataController.swift */,
 				AAA00002027 /* UsageService.swift */,
@@ -315,7 +315,7 @@
 				AAA00002011 /* Message.swift in Sources */,
 				AAA00002017 /* ChatModels.swift in Sources */,
 				AAA00002019 /* ConfigService.swift in Sources */,
-				AAA00002021 /* OpenAIService.swift in Sources */,
+				AAA00002021 /* xAIService.swift in Sources */,
 				AAA00002026 /* SubscriptionService.swift in Sources */,
 				AAA00002028 /* UsageService.swift in Sources */,
 				AAA00002032 /* UpgradeView.swift in Sources */,

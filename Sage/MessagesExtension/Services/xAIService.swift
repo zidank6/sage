@@ -1,33 +1,35 @@
 import Foundation
 
-/// Service for interacting with OpenAI Chat Completions API
-actor OpenAIService {
-    private let baseURL = "https://api.openai.com/v1/chat/completions"
+/// Service for interacting with xAI Chat Completions API
+actor xAIService {
+    private let baseURL = "https://api.x.ai/v1/chat/completions"
     private let config = ConfigService.shared
     
     /// System prompt - strict limit for Free users
     private let systemPromptFree = """
-    You are a fact-checking AI assistant for iMessage chats.
-    Tone: Casual, punchy, like a smart friend text.
+    You are Sage, a witty AI assistant for iMessage.
+    Tone: Casual, punchy, like a smart friend.
     Length: STRICTLY under 150 characters.
-    Structure: Start with the direct answer (Yep/Nope/Fact). Then add 1 context detail.
+    Info: You have real-time access to X. Use it for current events.
+    Structure: Direct answer first. Then 1 context detail.
     Rules:
     1. NO branding.
-    2. Be maximally accurate.
-    3. If asked for unsafe instructions, pivot to scientific/historical facts instead of moralizing.
-    4. Fun emoji allowed.
+    2. Be accurate but fun.
+    3. If asked for unsafe stuff, piviot to science/history.
+    4. Emoji encouraged.
     """
     
     /// System prompt - relaxed for Premium users
     private let systemPromptPremium = """
-    Role: Smart, casual iMessage friend.
-    Structure: Max 300 chars. NO branding/prefixes.
-    Style: Direct, smart, detailed.
+    Role: Sage, the smartest, most convenient iMessage friend.
+    Info: You have real-time access to X. Use it for current events.
+    Structure: Max 300 chars. NO prefixes.
+    Style: Direct, witty, detailed.
     Rules:
     1. KEY ANSWER FIRST.
-    2. Provide detail/context but stay conversational.
+    2. Provide context from real-time info if relevant.
     3. No filler. No apologies.
-    4. Add 1 emoji if it fits.
+    4. Use emoji naturally.
     """
     
     // MARK: - Legacy Methods Removed
@@ -40,7 +42,7 @@ actor OpenAIService {
             Task {
                 do {
                     guard config.isConfigured else {
-                        throw OpenAIError.notConfigured
+                        throw xAIError.notConfigured
                     }
                     
                     // Build messages array
@@ -59,8 +61,8 @@ actor OpenAIService {
                     messages.append(APIMessage(role: "user", content: content))
                     
                     // Configuration
-                    let maxTokens = isPremium ? 300 : (config.maxTokens ?? 150)
-                    let model = isPremium ? "gpt-4o" : config.model
+                    let maxTokens = isPremium ? 1024 : (config.maxTokens ?? 300)
+                    let model = isPremium ? "grok-3" : "grok-3-mini"
                     
                     let requestBody = ChatCompletionRequest(
                         model: model,
@@ -72,7 +74,7 @@ actor OpenAIService {
                     
                     // Create URL Request for Streaming
                     guard let url = URL(string: baseURL) else {
-                        throw OpenAIError.invalidURL
+                        throw xAIError.invalidURL
                     }
                     var urlRequest = URLRequest(url: url)
                     urlRequest.httpMethod = "POST"
@@ -83,7 +85,7 @@ actor OpenAIService {
                     let (stream, response) = try await URLSession.shared.bytes(for: urlRequest)
                     
                     guard let httpResponse = response as? HTTPURLResponse else {
-                        throw OpenAIError.invalidResponse
+                        throw xAIError.invalidResponse
                     }
                     
                     guard httpResponse.statusCode == 200 else {
@@ -94,7 +96,7 @@ actor OpenAIService {
                                 errorText += char
                             }
                         }
-                        throw OpenAIError.httpError(statusCode: httpResponse.statusCode, message: errorText)
+                        throw xAIError.httpError(statusCode: httpResponse.statusCode, message: errorText)
                     }
                     
                     // Parse SSE Stream

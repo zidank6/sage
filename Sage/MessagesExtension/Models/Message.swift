@@ -32,7 +32,7 @@ class ChatState {
     var lastSentMessage: String?
     
     /// Current model for API calls
-    var model: String = "gpt-4o"
+    var model: String = "grok-3"
     
     /// System prompt for the assistant
     let systemPrompt = """

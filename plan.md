@@ -1,7 +1,7 @@
 # Sage — Implementation Plan
 
 ## Overview
-iMessage extension with AI-powered responses via OpenAI, delivered as tamper-proof rich bubbles.
+iMessage extension with AI-powered responses via xAI, delivered as tamper-proof rich bubbles.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ iMessage extension with AI-powered responses via OpenAI, delivered as tamper-pro
 │  └───────┬───────┘  │
 │          │          │
 │  ┌───────▼───────┐  │
-│  │ OpenAIService │  │  ← Streaming API
+│  │ xAIService │  │  ← Streaming API
 │  └───────┬───────┘  │
 │          │          │
 │  ┌───────▼───────┐  │
@@ -49,13 +49,13 @@ STRICT RULES:
 ## Done
 - [x] Xcode project setup
 - [x] SwiftUI compact view
-- [x] OpenAI streaming integration
+- [x] xAI streaming integration
 - [x] MSMessage rich bubbles
 - [x] App icon
 - [x] Real device testing
 
 ## Future Ideas
-- [ ] Model selection (gpt-4o-mini for faster)
+- [ ] Model selection (grok-3-mini for faster)
 - [ ] Conversation memory
 - [ ] Image input support
 - [ ] Siri Shortcuts integration

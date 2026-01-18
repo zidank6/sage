@@ -33,7 +33,7 @@ struct UpgradeView: View {
             // Features Grid
             VStack(spacing: 16) {
                 FeatureRow(icon: "infinity", title: "Unlimited Messages", subtitle: "No daily limits")
-                FeatureRow(icon: "brain.head.profile", title: "Smarter AI", subtitle: "Powered by GPT-4o")
+                FeatureRow(icon: "brain.head.profile", title: "Smarter AI", subtitle: "Powered by Grok-3")
                 FeatureRow(icon: "text.quote", title: "Longer Responses", subtitle: "Detailed answers")
             }
             .padding(.vertical)

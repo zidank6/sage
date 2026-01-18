@@ -5,7 +5,7 @@ struct CompactView: View {
     @Bindable var chatState: ChatState
     let onSendToChat: (String) -> Void
     
-    private let openAI = OpenAIService()
+    private let xAI = xAIService()
     @State private var usageService = UsageService.shared
     @State private var subService = SubscriptionService.shared
     @State private var showUpgrade = false
@@ -300,7 +300,7 @@ struct CompactView: View {
                 await MainActor.run { chatState.messages.append(responseMessage) }
                 let responseIndex = await MainActor.run { chatState.messages.count - 1 }
                 
-                let stream = await openAI.streamMessage(text, context: nil, history: [], isPremium: isPremium)
+                let stream = await xAI.streamMessage(text, context: nil, history: [], isPremium: isPremium)
                 for try await chunk in stream {
                     await MainActor.run { chatState.messages[responseIndex].content += chunk }
                 }
