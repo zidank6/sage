@@ -12,6 +12,7 @@ struct CompactView: View {
     
     // Animation states
     @State private var isInputFocused = false
+    @State private var isBreathing = false
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -38,10 +39,22 @@ struct CompactView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background {
-            // Glassmorphic background
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .ignoresSafeArea()
+            ZStack {
+                Color(.systemGray6)
+                    .ignoresSafeArea()
+                
+                Color(.systemGray5)
+                    .ignoresSafeArea()
+                    .opacity(isBreathing ? 0.2 : 0.0)
+                    .animation(
+                        .easeInOut(duration: 5.0)
+                        .repeatForever(autoreverses: true),
+                        value: isBreathing
+                    )
+            }
+        }
+        .onAppear {
+            isBreathing = true
         }
         .sheet(isPresented: $showUpgrade) {
             UpgradeView()
