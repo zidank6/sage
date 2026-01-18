@@ -84,6 +84,7 @@ struct HistoryView: View {
 
 struct HistoryDetailView: View {
     @Bindable var item: ChatHistoryItem
+    @State private var showCopiedToast = false
     
     var body: some View {
         ScrollView {
@@ -111,6 +112,47 @@ struct HistoryDetailView: View {
                     Spacer()
                 }
                 
+                // Action Stack
+                HStack(spacing: 16) {
+                    // Copy Response
+                    Button {
+                        copyToClipboard(item.response)
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "doc.on.doc")
+                            Text("Copy")
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.blue)
+                    .controlSize(.small)
+                    
+                    // Copy Prompt
+                    Button {
+                        copyToClipboard(item.prompt)
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "quote.bubble")
+                            Text("Prompt")
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.secondary)
+                    .controlSize(.small)
+                    
+                    // Share
+                    ShareLink(item: shareText) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "square.and.arrow.up")
+                            Text("Share")
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.secondary)
+                    .controlSize(.small)
+                }
+                .padding(.leading, 4)
+                
                 Spacer()
             }
             .padding()
@@ -124,6 +166,38 @@ struct HistoryDetailView: View {
                 } label: {
                     Image(systemName: item.isBookmarked ? "bookmark.fill" : "bookmark")
                 }
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if showCopiedToast {
+                Text("Copied!")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(.black.opacity(0.8))
+                    .clipShape(Capsule())
+                    .padding(.bottom, 50)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    .zIndex(100)
+            }
+        }
+    }
+    
+    private var shareText: String {
+        "Prompt: \(item.prompt)\n\nSage: \(item.response)"
+    }
+    
+    private func copyToClipboard(_ text: String) {
+        UIPasteboard.general.string = text
+        withAnimation(.snappy) {
+            showCopiedToast = true
+        }
+        
+        // Hide after 2 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            withAnimation {
+                showCopiedToast = false
             }
         }
     }

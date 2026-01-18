@@ -2,12 +2,12 @@
 
 An iMessage extension that brings AI-powered answers to your texts. Ask questions, get instant responses, and share them as tamper-proof bubbles.
 
-## ✨ Features
-
-- **💬 AI Chat** — Ask anything directly in iMessage
-- **⚡ Streaming** — Watch responses appear in real-time
-- **🔒 Tamper-Proof** — Responses sent as non-editable rich bubbles
-- **📱 Native UI** — Clean SwiftUI bottom drawer interface
+### Key Features
+*   **Context-Aware Chat**: Reads recent messages to provide relevant responses.
+*   **Privacy-Friendly**: Your API key is stored securely in Keychain; conversations stay on-device.
+*   **Custom Persona**: Adjusts tone based on premium status (Witty/Dry vs. Smart/Detailed).
+*   **History & Sync**: Standalone iOS App with synced history and bookmarking.
+*   **Copy & Share**: Easily copy responses or share conversations from the History details.
 
 ## 🚀 Setup
 
