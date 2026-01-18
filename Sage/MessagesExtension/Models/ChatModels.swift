@@ -2,6 +2,15 @@ import Foundation
 
 // MARK: - Request Models
 
+/// xAI Live Search parameters for real-time web/X search
+struct SearchParameters: Encodable {
+    let mode: String  // "on", "auto", or "off"
+    
+    enum CodingKeys: String, CodingKey {
+        case mode
+    }
+}
+
 /// xAI Chat Completions API request
 struct ChatCompletionRequest: Encodable {
     let model: String
@@ -9,10 +18,12 @@ struct ChatCompletionRequest: Encodable {
     let temperature: Double
     let maxTokens: Int
     let stream: Bool
+    let searchParameters: SearchParameters?
     
     enum CodingKeys: String, CodingKey {
         case model, messages, temperature, stream
         case maxTokens = "max_tokens"
+        case searchParameters = "search_parameters"
     }
 }
 

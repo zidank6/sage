@@ -69,7 +69,8 @@ actor xAIService {
                         messages: messages,
                         temperature: config.temperature ?? 0.7,
                         maxTokens: maxTokens,
-                        stream: true
+                        stream: true,
+                        searchParameters: SearchParameters(mode: "on")
                     )
                     
                     // Create URL Request for Streaming
