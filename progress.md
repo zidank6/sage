@@ -16,8 +16,15 @@
     - [x] Built `UsageService` (Daily limit: 30)
     - [x] Added Paywall (`UpgradeView`)
     - [x] Updated Logic: Free (150 chars, gpt-3.5) vs Premium (300 chars, gpt-4o)
+- [x] **UI Overhaul (CompactView)**
+    - [x] Implemented Glassmorphic backgrounds (Material)
+    - [x] Added `TypingIndicator` with bounce animation
+    - [x] Updated Typography (SF Pro, new placeholder "What's up? ✨")
+    - [x] Redesigned Input Bar (Pill shape, Sparkle icon)
+    - [x] Redesigned Limit Overlay (Card style, blur background)
 
 ### Key Files
+- `CompactView.swift` — Main UI with new premium design
 - `SubscriptionService.swift` — Handles IAP
 - `UsageService.swift` — Handles daily counts
 - `UpgradeView.swift` — Premium paywall

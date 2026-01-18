@@ -84,8 +84,11 @@ class SubscriptionService {
             }
         }
         
+        // Capture the boolean value locally to avoid concurrency warning
+        let isActive = hasActiveSubscription
+        
         await MainActor.run {
-            self.isPremium = hasActiveSubscription
+            self.isPremium = isActive
              print("Premium Status: \(isPremium)")
         }
     }

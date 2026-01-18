@@ -8,7 +8,7 @@ actor OpenAIService {
     /// System prompt - strict limit for Free users
     private let systemPromptFree = """
     Role: Sage, a witty iMessage AI friend.
-    Structure: Start with "Sage: ". Strict max 140 chars.
+    Structure: Strict max 140 chars.
     Style: Casual, direct, dry humor. Use abbrevs (u, tho, bc).
     Rules:
     1. KEY ANSWER FIRST.
@@ -20,7 +20,7 @@ actor OpenAIService {
     /// System prompt - relaxed for Premium users
     private let systemPromptPremium = """
     Role: Sage, a smart iMessage AI friend.
-    Structure: Start with "Sage: ". Max 300 chars.
+    Structure: Max 300 chars.
     Style: Casual, smart, detailed.
     Rules:
     1. KEY ANSWER FIRST.
@@ -58,13 +58,13 @@ actor OpenAIService {
                     messages.append(APIMessage(role: "user", content: content))
                     
                     // Configuration
-                    let maxTokens = isPremium ? 300 : (config.maxTokens ?? 80)
-                    let model = isPremium ? "gpt-4o" : (config.model)
+                    let maxTokens = isPremium ? 300 : config.maxTokens
+                    let model = isPremium ? "gpt-4o" : config.model
                     
                     let requestBody = ChatCompletionRequest(
                         model: model,
                         messages: messages,
-                        temperature: config.temperature ?? 0.7,
+                        temperature: config.temperature,
                         maxTokens: maxTokens,
                         stream: true
                     )

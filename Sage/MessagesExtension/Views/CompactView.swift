@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Compact mode view: Minimal input at top of drawer
+/// Compact mode view: Premium, glassmorphic design
 struct CompactView: View {
     @Bindable var chatState: ChatState
     let onSendToChat: (String) -> Void
@@ -10,133 +10,235 @@ struct CompactView: View {
     @State private var subService = SubscriptionService.shared
     @State private var showUpgrade = false
     
+    // Animation states
+    @State private var isInputFocused = false
+    
     var body: some View {
-        VStack(spacing: 8) {
-            // Input bar - at top
-            inputBar
-            
-            // Usage Counter / Limit Warning
-            if !subService.isPremium {
-                if usageService.isLimitReached {
-                    limitReachedView
-                } else if !chatState.isLoading && currentResponse.isEmpty {
-                    Text("\(usageService.remaining) messages left today")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+        ZStack(alignment: .top) {
+            // Main Content
+            VStack(spacing: 12) {
+                // Input Layout
+                inputSection
+                
+                // Response Preview (only when needed)
+                if shouldShowResponse {
+                    responseSection
+                        .transition(.move(edge: .top).combined(with: .opacity))
                 }
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
             
-            // Response area
-            if chatState.isLoading || !currentResponse.isEmpty {
-                responseArea
+            // Limit Overlay
+            if showLimitOverlay {
+                limitReachedOverlay
+                    .transition(.opacity.animation(.easeInOut))
+                    .zIndex(100)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.top, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color(.systemBackground))
+        .background {
+            // Glassmorphic background
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea()
+        }
         .sheet(isPresented: $showUpgrade) {
             UpgradeView()
         }
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: shouldShowResponse)
+        .animation(.easeInOut, value: showLimitOverlay)
     }
     
-    // MARK: - Subviews
+    // MARK: - Components
     
-    private var limitReachedView: some View {
-        HStack {
-            Image(systemName: "lock.fill")
-                .foregroundStyle(.orange)
-            Text("Daily limit reached")
-                .font(.caption.bold())
-            Spacer()
-            Button("Unlock Unlimited") {
-                showUpgrade = true
-            }
-            .font(.caption.bold())
-            .buttonStyle(.bordered)
-            .tint(.blue)
-        }
-        .padding(.horizontal)
-        .padding(.vertical, 4)
-        .background(Color.orange.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-    
-    private var responseArea: some View {
-        HStack(alignment: .top, spacing: 8) {
-            VStack(alignment: .leading, spacing: 6) {
-                if chatState.isLoading && currentResponse.isEmpty {
-                    HStack(spacing: 6) {
-                        ProgressView()
-                            .scaleEffect(0.7)
-                        Text("Thinking...")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                } else {
-                    Text(currentResponse)
-                        .font(.subheadline)
-                        .lineLimit(4)
-                }
-                
-                // Action buttons
-                if !currentResponse.isEmpty && !chatState.isLoading {
-                    HStack(spacing: 8) {
-                        Button {
-                            onSendToChat(currentResponse)
-                            clearResponse()
-                        } label: {
-                            Text("Send")
-                                .font(.caption.bold())
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.small)
-                        
-                        Button { clearResponse() } label: {
-                            Image(systemName: "xmark")
-                                .font(.caption)
-                        }
-                        .foregroundStyle(.secondary)
-                    }
-                }
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(10)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-    
-    private var inputBar: some View {
-        HStack(spacing: 8) {
-            TextField("Ask anything...", text: $chatState.inputText)
-                .textFieldStyle(.plain)
-                .font(.body)
-                .onSubmit { sendMessage() }
-                .disabled(usageService.isLimitReached && !subService.isPremium)
+    private var inputSection: some View {
+        HStack(spacing: 12) {
+            // Decoration
+            Image(systemName: "sparkles")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(isPremium ? AnyShapeStyle(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)) : AnyShapeStyle(Color.secondary))
             
-            if !subService.isPremium && usageService.isLimitReached {
+            // Text Input
+            TextField("What's up? ✨", text: $chatState.inputText)
+                .textFieldStyle(.plain)
+                .font(.system(.body, design: .default))
+                .onSubmit { sendMessage() }
+                .disabled(isLimitReached)
+            
+            // Send / Upgrade Button
+            if isLimitReached {
                 Button { showUpgrade = true } label: {
-                    Image(systemName: "lock.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(.orange)
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(Color.orange)
+                        .clipShape(Circle())
                 }
             } else {
                 Button { sendMessage() } label: {
-                    Image(systemName: "arrow.up.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(canSend ? .blue : .gray.opacity(0.5))
+                    Image(systemName: "arrow.up")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(
+                            canSend ? Color.blue : Color.secondary.opacity(0.3)
+                        )
+                        .clipShape(Circle())
+                        .shadow(color: canSend ? .blue.opacity(0.3) : .clear, radius: 4, y: 2)
                 }
                 .disabled(!canSend)
+                .scaleEffect(canSend ? 1.0 : 0.95)
+                .animation(.spring(response: 0.3), value: canSend)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .background(Color(.tertiarySystemBackground))
-        .clipShape(Capsule())
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color(.systemBackground).opacity(0.5))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+                )
+        )
+    }
+    
+    private var responseSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // Header
+            HStack(spacing: 6) {
+                Image(systemName: "waveform")
+                    .font(.caption2)
+                    .foregroundStyle(.blue)
+                
+                Text("SAGE")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.secondary)
+                    .tracking(1)
+                
+                Spacer()
+                
+                // Clear button
+                Button {
+                    withAnimation {
+                        clearResponse()
+                    }
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.secondary)
+                        .padding(6)
+                        .background(Color.primary.opacity(0.05))
+                        .clipShape(Circle())
+                }
+            }
+            
+            // Content
+            if chatState.isLoading && currentResponse.isEmpty {
+                TypingIndicator()
+                    .padding(.vertical, 4)
+            } else {
+                Text(currentResponse)
+                    .font(.system(.subheadline, design: .default))
+                    .foregroundStyle(.primary)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            // Action
+            if !chatState.isLoading && !currentResponse.isEmpty {
+                Button {
+                    onSendToChat(currentResponse)
+                    clearResponse()
+                } label: {
+                    HStack {
+                        Text("Insert to Chat")
+                            .fontWeight(.medium)
+                        Image(systemName: "arrow.up.right")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(Color.blue)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .padding(.top, 4)
+            }
+        }
+        .padding(16)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.primary.opacity(0.05), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.05), radius: 10, y: 5)
+    }
+    
+    private var limitReachedOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.2).ignoresSafeArea()
+            
+            VStack(spacing: 16) {
+                Image(systemName: "lock.circle.fill")
+                    .font(.system(size: 40))
+                    .foregroundStyle(.orange)
+                    .shadow(color: .orange.opacity(0.3), radius: 10)
+                
+                VStack(spacing: 4) {
+                    Text("Limit Reached")
+                        .font(.headline)
+                    Text("You've used your free messages for today.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                
+                HStack(spacing: 12) {
+                    Button("Later") {
+                         chatState.inputText = ""
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    
+                    Button {
+                        showUpgrade = true
+                    } label: {
+                        Text("Unlock Unlimited")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.blue)
+                            .clipShape(Capsule())
+                    }
+                }
+            }
+            .padding(24)
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .shadow(radius: 20)
+            .padding(.horizontal, 40)
+        }
     }
     
     // MARK: - Helpers
+    
+    private var isPremium: Bool { subService.isPremium }
+    
+    private var isLimitReached: Bool {
+        !isPremium && usageService.isLimitReached
+    }
+    
+    private var showLimitOverlay: Bool {
+        isLimitReached && !chatState.inputText.isEmpty && !showUpgrade
+    }
+    
+    private var shouldShowResponse: Bool {
+        chatState.isLoading || !currentResponse.isEmpty
+    }
     
     private var currentResponse: String {
         chatState.messages.last(where: { $0.role == .assistant })?.content ?? ""
@@ -148,6 +250,7 @@ struct CompactView: View {
     
     private func clearResponse() {
         chatState.messages.removeAll()
+        chatState.isLoading = false
     }
     
     private func sendMessage() {
@@ -171,7 +274,7 @@ struct CompactView: View {
                 await MainActor.run { chatState.messages.append(responseMessage) }
                 let responseIndex = await MainActor.run { chatState.messages.count - 1 }
                 
-                let stream = await openAI.streamMessage(text, context: nil, history: [], isPremium: subService.isPremium)
+                let stream = await openAI.streamMessage(text, context: nil, history: [], isPremium: isPremium)
                 for try await chunk in stream {
                     await MainActor.run { chatState.messages[responseIndex].content += chunk }
                 }
@@ -186,5 +289,29 @@ struct CompactView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Micro Components
+
+struct TypingIndicator: View {
+    @State private var offset: CGFloat = 0
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(0..<3) { index in
+                Circle()
+                    .frame(width: 6, height: 6)
+                    .foregroundStyle(.secondary)
+                    .offset(y: offset)
+                    .animation(
+                        .easeInOut(duration: 0.5)
+                        .repeatForever()
+                        .delay(0.1 * Double(index)),
+                        value: offset
+                    )
+            }
+        }
+        .onAppear { offset = -4 } // Bounce up
     }
 }
