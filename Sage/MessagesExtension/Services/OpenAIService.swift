@@ -58,13 +58,13 @@ actor OpenAIService {
                     messages.append(APIMessage(role: "user", content: content))
                     
                     // Configuration
-                    let maxTokens = isPremium ? 300 : config.maxTokens
+                    let maxTokens = isPremium ? 300 : (config.maxTokens ?? 150)
                     let model = isPremium ? "gpt-4o" : config.model
                     
                     let requestBody = ChatCompletionRequest(
                         model: model,
                         messages: messages,
-                        temperature: config.temperature,
+                        temperature: config.temperature ?? 0.7,
                         maxTokens: maxTokens,
                         stream: true
                     )

@@ -253,6 +253,19 @@ struct CompactView: View {
         chatState.isLoading = false
     }
     
+    private func saveToHistory(prompt: String, response: String) {
+        print("💾 Saving to history: \(prompt) -> \(response.prefix(20))...")
+        let item = ChatHistoryItem(prompt: prompt, response: response)
+        let context = DataController.shared.container.mainContext
+        context.insert(item)
+        do {
+            try context.save()
+            print("✅ Saved successfully!")
+        } catch {
+            print("❌ Failed to save history: \(error)")
+        }
+    }
+    
     private func sendMessage() {
         let text = chatState.inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !chatState.isLoading else { return }
@@ -279,7 +292,16 @@ struct CompactView: View {
                     await MainActor.run { chatState.messages[responseIndex].content += chunk }
                 }
                 
+                
                 await MainActor.run { chatState.isLoading = false }
+                
+                // Save to History
+                let finalResponse = await MainActor.run { chatState.messages[responseIndex].content }
+                if !finalResponse.isEmpty {
+                   await MainActor.run {
+                       saveToHistory(prompt: text, response: finalResponse)
+                   }
+                }
             } catch {
                 await MainActor.run {
                     chatState.isLoading = false

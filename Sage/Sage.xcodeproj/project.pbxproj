@@ -25,9 +25,15 @@
 		AAA00002030 /* Sage.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AAA00002029 /* Sage.storekit */; };
 		AAA00002032 /* UpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002031 /* UpgradeView.swift */; };
 		AAA00002034 /* ChatHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002033 /* ChatHistoryItem.swift */; };
+		AAA00001004 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00001005 /* HistoryView.swift */; };
+		AAA00001006 /* SavedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00001007 /* SavedView.swift */; };
+		AAA00001006 /* SavedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00001007 /* SavedView.swift */; };
+		AAA00001008 /* UpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002031 /* UpgradeView.swift */; };
 		AAA00002035 /* ChatHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002033 /* ChatHistoryItem.swift */; };
 		AAA00002037 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002036 /* DataController.swift */; };
 		AAA00002038 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002036 /* DataController.swift */; };
+		AAA00002040 /* ConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002020 /* ConfigService.swift */; };
+		AAA00002041 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA00002025 /* SubscriptionService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +63,8 @@
 /* Begin PBXFileReference section */
 		AAA00001002 /* SageApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SageApp.swift; sourceTree = "<group>"; };
 		AAA00001003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AAA00001005 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		AAA00001007 /* SavedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedView.swift; sourceTree = "<group>"; };
 		AAA00002002 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		AAA00002004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AAA00002006 /* CompactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactView.swift; sourceTree = "<group>"; };
@@ -110,6 +118,8 @@
 			isa = PBXGroup;
 			children = (
 				AAA00001002 /* SageApp.swift */,
+				AAA00001005 /* HistoryView.swift */,
+				AAA00001007 /* SavedView.swift */,
 				AAA00001003 /* Info.plist */,
 			);
 			path = SageApp;
@@ -283,8 +293,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAA00001001 /* SageApp.swift in Sources */,
+				AAA00001004 /* HistoryView.swift in Sources */,
+				AAA00001006 /* SavedView.swift in Sources */,
+				AAA00001008 /* UpgradeView.swift in Sources */,
 				AAA00002034 /* ChatHistoryItem.swift in Sources */,
 				AAA00002037 /* DataController.swift in Sources */,
+				AAA00002040 /* ConfigService.swift in Sources */,
+				AAA00002041 /* SubscriptionService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

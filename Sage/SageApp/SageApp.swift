@@ -13,25 +13,94 @@ struct SageApp: App {
 
 struct ContentView: View {
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "message.badge.waveform")
-                .font(.system(size: 60))
-                .foregroundStyle(.blue)
+        TabView {
+            HomeView()
+                .tabItem {
+                    Label("Sage", systemImage: "sparkles")
+                }
             
-            Text("Sage")
-                .font(.largeTitle.bold())
+            HistoryView()
+                .tabItem {
+                    Label("History", systemImage: "clock")
+                }
             
-            Text("Open this extension in Messages")
-                .foregroundStyle(.secondary)
-            
-            Text("Messages → Compose → App Drawer → Sage")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
+            SavedView()
+                .tabItem {
+                    Label("Saved", systemImage: "bookmark")
+                }
         }
-        .padding()
     }
 }
 
-#Preview {
-    ContentView()
+struct HomeView: View {
+    @State private var subService = SubscriptionService.shared
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 30) {
+                Spacer()
+                
+                // Hero
+                Image(systemName: "message.badge.waveform.fill")
+                    .font(.system(size: 80))
+                    .foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .shadow(color: .blue.opacity(0.3), radius: 20)
+                
+                VStack(spacing: 8) {
+                    Text("Sage")
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                    
+                    Text("AI in iMessage")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                }
+                
+                // Status Card
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("Status")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(subService.isPremium ? "Premium" : "Free")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(subService.isPremium ? .purple : .secondary)
+                    }
+                    
+                    Divider()
+                    
+                    HStack {
+                        Text("Model")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(ConfigService.shared.model) // Assuming accessible or re-expose
+                            .font(.system(.body, design: .monospaced))
+                    }
+                }
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .padding(.horizontal, 32)
+                
+                Spacer()
+                
+                // Action
+                Link(destination: URL(string: "sms:")!) {
+                    HStack {
+                        Image(systemName: "message.fill")
+                        Text("Open Messages")
+                            .fontWeight(.semibold)
+                    }
+                    .font(.title3)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color.blue)
+                    .clipShape(Capsule())
+                    .shadow(radius: 10)
+                }
+                .padding(.horizontal, 32)
+                .padding(.bottom, 20)
+            }
+        }
+    }
 }
