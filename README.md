@@ -7,6 +7,10 @@
 
 iMessage extension for AI chat. Uses xAI's Grok with live search.
 
+<p align="center">
+  <img src="assets/demo.png" alt="Sage Demo" width="300">
+</p>
+
 ## Requirements
 
 - Xcode 15+
