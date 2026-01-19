@@ -5,7 +5,7 @@
 ![xAI](https://img.shields.io/badge/xAI-Grok--3-black)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-iMessage extension for AI chat. Uses xAI's Grok with live search.
+@grok but for iMessage. Uses xAI's Grok with live search.
 
 <p align="center">
   <img src="assets/demo.png" alt="Sage Demo" width="300">
